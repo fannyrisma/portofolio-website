@@ -3767,6 +3767,28 @@ input[type="button"].btn-block {
     .navbar-dark .navbar-text a:hover, .navbar-dark .navbar-text a:focus {
       color: #fff; }
 
+      .js-fh5co-nav-toggle {
+        color: white !important; /* Warna biru, ganti sesuai keinginan */
+        background: none !important;
+        transition: color 0.3s; /* Animasi halus */
+    }
+    
+    .js-fh5co-nav-toggle i,
+    .js-fh5co-nav-toggle span {
+        color: white !important; /* Pastikan ikon berwarna */
+        background: none !important;
+    }
+    
+    /* Pastikan warna tetap saat navbar di-scroll */
+    .ftco_navbar.scrolled .js-fh5co-nav-toggle,
+    .ftco_navbar.awake .js-fh5co-nav-toggle {
+        color: white !important;
+    }
+    
+    .ftco_navbar.scrolled .js-fh5co-nav-toggle i,
+    .ftco_navbar.awake .js-fh5co-nav-toggle i {
+        color: white !important;
+    }
 .card {
   position: relative;
   display: -webkit-box;
