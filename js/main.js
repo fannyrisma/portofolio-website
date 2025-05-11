@@ -43,117 +43,138 @@
 
 
    // Burger Menu
-   document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
-	navmenu.addEventListener('click', function(e) {
-		e.preventDefault();
-		this.parentNode.classList.toggle('active');
-		this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
-		e.stopImmediatePropagation();
-	});
-});	
-   var burgerMenu = function() {
+var burgerMenu = function() {
+    var clickCount = 0; // [NEW] Variabel untuk menghitung jumlah klik
 
-		$('body').on('click', '.js-fh5co-nav-toggle', function(event){
+    $('body').on('click', '.js-fh5co-nav-toggle', function(event) {
+        event.preventDefault();
 
-			event.preventDefault();
+        if ($('#ftco-nav').is(':visible')) {
+            $(this).removeClass('active');
+            $('#ftco-nav').slideUp();
+        } else {
+            $(this).addClass('active');
+            $('#ftco-nav').slideDown();
+        }
+    });
 
-			if ( $('#ftco-nav').is(':visible') ) {
-				$(this).removeClass('active');
-				$('#ftco-nav').slideUp();
-			} else {
-				$(this).addClass('active');
-				$('#ftco-nav').slideDown();
-			}
-		});
+    $('#ftco-nav .nav-link').on('click', function() {
+        clickCount++; // [MODIFIED] Tambah hitungan klik setiap kali link diklik
+        if ($('#ftco-nav').is(':visible') && clickCount >= 2) { // [MODIFIED] Tutup hanya setelah klik kedua
+            $('.js-fh5co-nav-toggle').removeClass('active');
+            $('#ftco-nav').slideUp();
+            clickCount = 0; // [NEW] Reset hitungan setelah ditutup
+        }
+    });
 
-		$('#ftco-nav .nav-link').on('click', function() {
-			if ($('#ftco-nav').is(':visible')) {
-				$('.js-fh5co-nav-toggle').removeClass('active');
-			}
-		});
+    $(document).on('click', function(event) {
+        if (
+            !$(event.target).closest('#ftco-nav').length &&
+            !$(event.target).closest('.js-fh5co-nav-toggle').length &&
+            $('#ftco-nav').is(':visible')
+        ) {
+            $('.js-fh5co-nav-toggle').removeClass('active');
+            $('#ftco-nav').slideUp();
+            clickCount = 0; // [NEW] Reset hitungan saat klik di luar
+        }
+    });
+};
+burgerMenu();
 
-		$(document).on('click', function(event) {
-			if (
-				!$(event.target).closest('#ftco-nav').length &&
-				!$(event.target).closest('.js-fh5co-nav-toggle').length &&
-				$('#ftco-nav').is(':visible')
-			) {
-				$('.js-fh5co-nav-toggle').removeClass('active');
-			}
-		});
-	};
-	
-	burgerMenu();
+var onePageClick = function() {
+    $(document).on('click', '#ftco-nav a[href^="#"]', function(event) {
+        event.preventDefault();
 
-	var onePageClick = function() {
+        var href = $.attr(this, 'href');
 
+        $('html, body').animate({
+            scrollTop: $($.attr(this, 'href')).offset().top - 70
+        }, 500, function() {
+            // window.location.hash = href;
+        });
+    });
+};
+onePageClick();
 
-		$(document).on('click', '#ftco-nav a[href^="#"]', function (event) {
-	    event.preventDefault();
+var carousel = function() {
+    $('.home-slider').owlCarousel({
+        loop: true,
+        autoplay: true,
+        margin: 0,
+        animateOut: 'fadeOut',
+        animateIn: 'fadeIn',
+        nav: false,
+        autoplayHoverPause: false,
+        items: 1,
+        navText: ["<span class='ion-md-arrow-back'></span>", "<span class='ion-chevron-right'></span>"],
+        responsive: {
+            0: {
+                items: 1
+            },
+            600: {
+                items: 1
+            },
+            1000: {
+                items: 1
+            }
+        }
+    });
+};
+carousel();
 
-	    var href = $.attr(this, 'href');
+$('nav .dropdown').hover(function() {
+    var $this = $(this);
+    $this.addClass('show');
+    $this.find('> a').attr('aria-expanded', true);
+    $this.find('.dropdown-menu').addClass('show');
+}, function() {
+    var $this = $(this);
+    $this.removeClass('show');
+    $this.find('> a').attr('aria-expanded', false);
+    $this.find('.dropdown-menu').removeClass('show');
+});
 
-	    $('html, body').animate({
-	        scrollTop: $($.attr(this, 'href')).offset().top - 70
-	    }, 500, function() {
-	    	// window.location.hash = href;
-	    });
-		});
+$('#dropdown04').on('show.bs.dropdown', function() {
+    console.log('show');
+});
 
-	};
+/**
+ * Toggle mobile nav dropdowns
+ */
+document.querySelectorAll('.navmenu .toggle-dropdown').forEach(navmenu => {
+    navmenu.addEventListener('click', function(e) {
+        e.preventDefault();
+        this.parentNode.classList.toggle('active');
+        this.parentNode.nextElementSibling.classList.toggle('dropdown-active');
+        e.stopImmediatePropagation();
+    });
+});
 
-	onePageClick();
-	
+// Burger Menu untuk navigasi mobile
+document.querySelectorAll('#ftco-nav a').forEach(navmenu => {
+    navmenu.addEventListener('click', () => {
+        if (document.querySelector('.mobile-nav-active')) { // [MODIFIED] Gunakan logika clickCount
+            clickCount++; // [MODIFIED] Tambah hitungan klik
+            if (clickCount >= 2) { // [MODIFIED] Tutup setelah klik kedua
+                mobileNavToogle(); // [MODIFIED] Panggil fungsi untuk tutup burger
+                clickCount = 0; // [NEW] Reset hitungan
+            }
+        }
+    });
+});
 
-	var carousel = function() {
-		$('.home-slider').owlCarousel({
-	    loop:true,
-	    autoplay: true,
-	    margin:0,
-	    animateOut: 'fadeOut',
-	    animateIn: 'fadeIn',
-	    nav:false,
-	    autoplayHoverPause: false,
-	    items: 1,
-	    navText : ["<span class='ion-md-arrow-back'></span>","<span class='ion-chevron-right'></span>"],
-	    responsive:{
-	      0:{
-	        items:1
-	      },
-	      600:{
-	        items:1
-	      },
-	      1000:{
-	        items:1
-	      }
-	    }
-		});
-	};
-	carousel();
-
-	$('nav .dropdown').hover(function(){
-		var $this = $(this);
-		// 	 timer;
-		// clearTimeout(timer);
-		$this.addClass('show');
-		$this.find('> a').attr('aria-expanded', true);
-		// $this.find('.dropdown-menu').addClass('animated-fast fadeInUp show');
-		$this.find('.dropdown-menu').addClass('show');
-	}, function(){
-		var $this = $(this);
-			// timer;
-		// timer = setTimeout(function(){
-			$this.removeClass('show');
-			$this.find('> a').attr('aria-expanded', false);
-			// $this.find('.dropdown-menu').removeClass('animated-fast fadeInUp show');
-			$this.find('.dropdown-menu').removeClass('show');
-		// }, 100);
-	});
-
-
-	$('#dropdown04').on('show.bs.dropdown', function () {
-	  console.log('show');
-	});
+// [NEW] Fungsi untuk toggle burger (asumsi fungsi ini ada)
+function mobileNavToogle() {
+    $('.js-fh5co-nav-toggle').trigger('click'); // Simulasi klik pada toggle
+    // Atau gunakan logika langsung:
+    // if ($('#ftco-nav').is(':visible')) {
+    //     $('.js-fh5co-nav-toggle').removeClass('active');
+    //     $('#ftco-nav').slideUp();
+    // } else {
+    //     $('.js-fh5co-nav-toggle').addClass('active');
+    //     $('#ftco-nav').slideDown();
+    // }
+}
 
 	// scroll
 	var scrollWindow = function() {
